@@ -3,7 +3,7 @@
   <component name="FacetManager">
     <facet type="android-gradle" name="Android-Gradle">
       <configuration>
-        <option name="GRADLE_PROJECT_PATH" value=":Caldroid:caldroid" />
+        <option name="GRADLE_PROJECT_PATH" value=":caldroid" />
       </configuration>
     </facet>
     <facet type="android" name="Android">

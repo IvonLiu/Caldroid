@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/caldroid_white"
@@ -25,7 +26,7 @@
             android:layout_toLeftOf="@+id/calendar_right_arrow"
             android:layout_toRightOf="@+id/calendar_left_arrow"
             android:gravity="center_horizontal"
-            android:textIsSelectable="true"
+            android:textIsSelectable="false"
             android:textSize="21sp" />
 
         <Button

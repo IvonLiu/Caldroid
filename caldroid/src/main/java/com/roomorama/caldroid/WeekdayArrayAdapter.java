@@ -1,7 +1,6 @@
 package com.roomorama.caldroid;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,11 +16,13 @@ import java.util.List;
  * Customize the weekday gridview
  */
 public class WeekdayArrayAdapter extends ArrayAdapter<String> {
-    public static int textColor = Color.LTGRAY;
+
+    private int textColor;
 
     public WeekdayArrayAdapter(Context context, int textViewResourceId,
-                               List<String> objects) {
+                               List<String> objects, int textColor) {
         super(context, textViewResourceId, objects);
+        this.textColor = textColor;
     }
 
     // To prevent cell highlighted when clicked

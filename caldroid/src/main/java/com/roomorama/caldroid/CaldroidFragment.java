@@ -130,6 +130,11 @@ public class CaldroidFragment extends DialogFragment {
     private ArrayList<DateGridFragment> fragments;
 
     /**
+     * View components added by me
+     */
+    private View mOuterContainer;
+
+    /**
      * Initial params key
      */
     public final static String DIALOG_TITLE = "dialogTitle";
@@ -145,6 +150,17 @@ public class CaldroidFragment extends DialogFragment {
     public final static String SIX_WEEKS_IN_CALENDAR = "sixWeeksInCalendar";
     public final static String ENABLE_CLICK_ON_DISABLED_DATES = "enableClickOnDisabledDates";
     public final static String SQUARE_TEXT_VIEW_CELL = "squareTextViewCell";
+
+    /**
+     * Initial param keys added by me
+     */
+    public final static String BACKGROUND_COLOR = "backgroundColor";
+    public final static String PREV_ARROW_RESOURCE = "prevArrowResource";
+    public final static String NEXT_ARROW_RESOURCE = "nextArrowResource";
+    public final static String MONTH_TEXT_COLOR = "monthTextColor";
+    public final static String WEEK_TEXT_COLOR = "weekTextColor";
+    public final static String NORMAL_DAY_TEXT_COLOR = "normalDaytextColor";
+    public final static String DISABLE_DAY_TEXT_COLOR = "disableDayTextColor";
 
     /**
      * For internal use
@@ -217,6 +233,17 @@ public class CaldroidFragment extends DialogFragment {
     protected boolean squareTextViewCell;
 
     /**
+     * Variables to store params added by me
+     */
+    protected int mBackgroundColor;
+    protected int mPrevArrowResource;
+    protected int mNextArrowResource;
+    protected int mMonthTextColor;
+    protected int mWeekTextColor;
+    protected int mNormalDayTextColor;
+    protected int mDisableDayTextColor;
+
+    /**
      * dateItemClickListener is fired when user click on the date cell
      */
     private OnItemClickListener dateItemClickListener;
@@ -253,7 +280,7 @@ public class CaldroidFragment extends DialogFragment {
     public WeekdayArrayAdapter getNewWeekdayAdapter() {
         return new WeekdayArrayAdapter(
                 getActivity(), android.R.layout.simple_list_item_1,
-                getDaysOfWeek());
+                getDaysOfWeek(), mWeekTextColor);
     }
 
     /**
@@ -345,6 +372,15 @@ public class CaldroidFragment extends DialogFragment {
         caldroidData
                 .put(_BACKGROUND_FOR_DATETIME_MAP, backgroundForDateTimeMap);
         caldroidData.put(_TEXT_COLOR_FOR_DATETIME_MAP, textColorForDateTimeMap);
+
+        // Params added by me
+        caldroidData.put(BACKGROUND_COLOR, mBackgroundColor);
+        caldroidData.put(PREV_ARROW_RESOURCE, mPrevArrowResource);
+        caldroidData.put(NEXT_ARROW_RESOURCE, mNextArrowResource);
+        caldroidData.put(MONTH_TEXT_COLOR, mMonthTextColor);
+        caldroidData.put(WEEK_TEXT_COLOR, mWeekTextColor);
+        caldroidData.put(NORMAL_DAY_TEXT_COLOR, mNormalDayTextColor);
+        caldroidData.put(DISABLE_DAY_TEXT_COLOR, mDisableDayTextColor);
 
         return caldroidData;
     }
@@ -1062,6 +1098,15 @@ public class CaldroidFragment extends DialogFragment {
                         maxDateTimeString, null);
             }
 
+            // Get arguments added by me
+            mBackgroundColor = args.getInt(BACKGROUND_COLOR, getResources().getColor(R.color.caldroid_white));
+            mPrevArrowResource = args.getInt(PREV_ARROW_RESOURCE, R.drawable.calendar_prev_arrow);
+            mNextArrowResource = args.getInt(NEXT_ARROW_RESOURCE, R.drawable.calendar_next_arrow);
+            mMonthTextColor = args.getInt(MONTH_TEXT_COLOR, getResources().getColor(R.color.caldroid_black));
+            mWeekTextColor = args.getInt(WEEK_TEXT_COLOR, Color.LTGRAY);
+            mNormalDayTextColor = args.getInt(NORMAL_DAY_TEXT_COLOR, Color.BLACK);
+            mDisableDayTextColor = args.getInt(DISABLE_DAY_TEXT_COLOR, Color.GRAY);
+
         }
         if (month == -1 || year == -1) {
             DateTime dateTime = DateTime.today(TimeZone.getDefault());
@@ -1129,9 +1174,14 @@ public class CaldroidFragment extends DialogFragment {
         // Inflate layout
         View view = inflater.inflate(R.layout.calendar_view, container, false);
 
+        // For the outermost LinearLayout container
+        mOuterContainer = view.findViewById(R.id.container);
+        mOuterContainer.setBackgroundColor(mBackgroundColor);
+
         // For the monthTitleTextView
         monthTitleTextView = (TextView) view
                 .findViewById(R.id.calendar_month_year_textview);
+        monthTitleTextView.setTextColor(mMonthTextColor);
 
         // For the left arrow button
         leftArrowButton = (Button) view.findViewById(R.id.calendar_left_arrow);
@@ -1155,6 +1205,10 @@ public class CaldroidFragment extends DialogFragment {
                 nextMonth();
             }
         });
+
+        // Set arrow icons
+        leftArrowButton.setBackgroundResource(mPrevArrowResource);
+        rightArrowButton.setBackgroundResource(mNextArrowResource);
 
         // Show navigation arrows depend on initial arguments
         setShowNavigationArrows(showNavigationArrows);
@@ -1272,6 +1326,7 @@ public class CaldroidFragment extends DialogFragment {
             dateGridFragment.setOnItemClickListener(getDateItemClickListener());
             dateGridFragment
                     .setOnItemLongClickListener(getDateItemLongClickListener());
+            dateGridFragment.setBackgroundColor(mBackgroundColor);
         }
 
         // Setup InfinitePagerAdapter to wrap around MonthPagerAdapter

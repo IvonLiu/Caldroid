@@ -2,7 +2,6 @@ package com.roomorama.caldroid;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +41,13 @@ public class CaldroidGridAdapter extends BaseAdapter {
     protected boolean sixWeeksInCalendar;
     protected boolean squareTextViewCell;
     protected Resources resources;
+
+    /**
+     * Things to retrieve from Caldroid data, added by me
+      */
+    protected int mBackgroundColor;
+    protected int mNormalTextColor;
+    protected int mDisabledTextColor;
 
     /**
      * caldroidData belongs to Caldroid
@@ -175,6 +181,11 @@ public class CaldroidGridAdapter extends BaseAdapter {
 
         this.datetimeList = CalendarHelper.getFullWeeks(this.month, this.year,
                 startDayOfWeek, sixWeeksInCalendar);
+
+        // Retrieve params added by me
+        mBackgroundColor = (int) caldroidData.get(CaldroidFragment.BACKGROUND_COLOR);
+        mNormalTextColor = (int) caldroidData.get(CaldroidFragment.NORMAL_DAY_TEXT_COLOR);
+        mDisabledTextColor = (int) caldroidData.get(CaldroidFragment.DISABLE_DAY_TEXT_COLOR);
     }
 
     public void updateToday() {
@@ -230,7 +241,8 @@ public class CaldroidGridAdapter extends BaseAdapter {
      * @param cellView
      */
     protected void customizeTextView(int position, TextView cellView) {
-        cellView.setTextColor(Color.BLACK);
+        cellView.setTextColor(mNormalTextColor);
+        cellView.setBackgroundColor(mBackgroundColor);
 
         // Get the padding of cell so that it can be restored later
         int topPadding = cellView.getPaddingTop();
@@ -256,7 +268,7 @@ public class CaldroidGridAdapter extends BaseAdapter {
                 || (disableDates != null && disableDatesMap
                 .containsKey(dateTime))) {
 
-            cellView.setTextColor(CaldroidFragment.disabledTextColor);
+            cellView.setTextColor(mDisabledTextColor);
             if (CaldroidFragment.disabledBackgroundDrawable == -1) {
                 cellView.setBackgroundResource(R.drawable.disable_cell);
             } else {
@@ -287,9 +299,11 @@ public class CaldroidGridAdapter extends BaseAdapter {
         if (shouldResetDiabledView && shouldResetSelectedView) {
             // Customize for today
             if (dateTime.equals(getToday())) {
-                cellView.setBackgroundResource(R.drawable.red_border);
+                //cellView.setBackgroundResource(R.drawable.red_border);
+                cellView.setBackgroundColor(mBackgroundColor);
             } else {
-                cellView.setBackgroundResource(R.drawable.cell_bg);
+                //cellView.setBackgroundResource(R.drawable.cell_bg);
+                cellView.setBackgroundColor(mBackgroundColor);
             }
         }
 
