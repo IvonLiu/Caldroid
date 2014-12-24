@@ -11,12 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
-        <Button
+        <ImageView
             android:id="@+id/calendar_left_arrow"
             android:layout_width="50dp"
             android:layout_height="44dp"
-            android:layout_alignParentLeft="true"
-            android:background="@drawable/left_arrow" />
+            android:layout_alignParentLeft="true"/>
 
         <TextView
             android:id="@+id/calendar_month_year_textview"
@@ -29,12 +28,11 @@
             android:textIsSelectable="false"
             android:textSize="21sp" />
 
-        <Button
+        <ImageView
             android:id="@+id/calendar_right_arrow"
             android:layout_width="50dp"
             android:layout_height="44dp"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/right_arrow" />
+            android:layout_alignParentRight="true"/>
     </RelativeLayout>
 
     <GridView
