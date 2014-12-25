@@ -164,6 +164,7 @@ public class CaldroidFragment extends DialogFragment {
     public final static String WEEK_TEXT_COLOR = "weekTextColor";
     public final static String NORMAL_DAY_TEXT_COLOR = "normalDaytextColor";
     public final static String DISABLE_DAY_TEXT_COLOR = "disableDayTextColor";
+    public final static String EVENT_INDICATOR_COLOR = "eventIndicatorColor";
 
     /**
      * For internal use
@@ -172,6 +173,11 @@ public class CaldroidFragment extends DialogFragment {
     public final static String _MAX_DATE_TIME = "_maxDateTime";
     public final static String _BACKGROUND_FOR_DATETIME_MAP = "_backgroundForDateTimeMap";
     public final static String _TEXT_COLOR_FOR_DATETIME_MAP = "_textColorForDateTimeMap";
+
+    /**
+     * For internal use added by me
+     */
+    public final static String _EVENT_FOR_DATETIME_MAP = "_eventForDateTimeMap";
 
     /**
      * Initial data
@@ -205,6 +211,11 @@ public class CaldroidFragment extends DialogFragment {
      */
     protected HashMap<DateTime, Integer> textColorForDateTimeMap = new HashMap<DateTime, Integer>();
     ;
+
+    /**
+     * eventForDateTimeMap holds whether each date should show event indicator
+     */
+    protected HashMap<DateTime, Boolean> eventForDateTimeMap = new HashMap<DateTime, Boolean>();
 
     /**
      * First column of calendar is Sunday
@@ -246,6 +257,7 @@ public class CaldroidFragment extends DialogFragment {
     protected int mWeekTextColor;
     protected int mNormalDayTextColor;
     protected int mDisableDayTextColor;
+    protected int mEventIndicatorColor;
 
     /**
      * dateItemClickListener is fired when user click on the date cell
@@ -373,9 +385,11 @@ public class CaldroidFragment extends DialogFragment {
         caldroidData.put(SQUARE_TEXT_VIEW_CELL, squareTextViewCell);
 
         // For internal use
-        caldroidData
-                .put(_BACKGROUND_FOR_DATETIME_MAP, backgroundForDateTimeMap);
+        caldroidData.put(_BACKGROUND_FOR_DATETIME_MAP, backgroundForDateTimeMap);
         caldroidData.put(_TEXT_COLOR_FOR_DATETIME_MAP, textColorForDateTimeMap);
+
+        // For internal use added by me
+        caldroidData.put(_EVENT_FOR_DATETIME_MAP, eventForDateTimeMap);
 
         // Params added by me
         caldroidData.put(BACKGROUND_COLOR, mBackgroundColor);
@@ -385,6 +399,7 @@ public class CaldroidFragment extends DialogFragment {
         caldroidData.put(WEEK_TEXT_COLOR, mWeekTextColor);
         caldroidData.put(NORMAL_DAY_TEXT_COLOR, mNormalDayTextColor);
         caldroidData.put(DISABLE_DAY_TEXT_COLOR, mDisableDayTextColor);
+        caldroidData.put(EVENT_INDICATOR_COLOR, mEventIndicatorColor);
 
         return caldroidData;
     }
@@ -471,6 +486,14 @@ public class CaldroidFragment extends DialogFragment {
 
     public void setTextColorForDateTime(int textColorRes, DateTime dateTime) {
         textColorForDateTimeMap.put(dateTime, Integer.valueOf(textColorRes));
+    }
+
+    /**
+     * Set eventForDateTimeMap
+     */
+    public void setHasEventsForDate(boolean hasEvents, Date date) {
+        DateTime dateTime = CalendarHelper.convertDateToDateTime(date);
+        eventForDateTimeMap.put(dateTime, hasEvents);
     }
 
     /**
@@ -1111,6 +1134,7 @@ public class CaldroidFragment extends DialogFragment {
             mWeekTextColor = args.getInt(WEEK_TEXT_COLOR, Color.LTGRAY);
             mNormalDayTextColor = args.getInt(NORMAL_DAY_TEXT_COLOR, Color.BLACK);
             mDisableDayTextColor = args.getInt(DISABLE_DAY_TEXT_COLOR, Color.GRAY);
+            mEventIndicatorColor = args.getInt(EVENT_INDICATOR_COLOR, Color.BLACK);
 
         }
         if (month == -1 || year == -1) {

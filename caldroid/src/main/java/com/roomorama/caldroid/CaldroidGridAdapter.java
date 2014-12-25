@@ -1,7 +1,9 @@
 package com.roomorama.caldroid;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +50,7 @@ public class CaldroidGridAdapter extends BaseAdapter {
     protected int mBackgroundColor;
     protected int mNormalTextColor;
     protected int mDisabledTextColor;
+    protected int mEventIndicatorColor;
 
     /**
      * caldroidData belongs to Caldroid
@@ -186,6 +189,7 @@ public class CaldroidGridAdapter extends BaseAdapter {
         mBackgroundColor = (int) caldroidData.get(CaldroidFragment.BACKGROUND_COLOR);
         mNormalTextColor = (int) caldroidData.get(CaldroidFragment.NORMAL_DAY_TEXT_COLOR);
         mDisabledTextColor = (int) caldroidData.get(CaldroidFragment.DISABLE_DAY_TEXT_COLOR);
+        mEventIndicatorColor = (int) caldroidData.get(CaldroidFragment.EVENT_INDICATOR_COLOR);
     }
 
     public void updateToday() {
@@ -201,7 +205,7 @@ public class CaldroidGridAdapter extends BaseAdapter {
 
     @SuppressWarnings("unchecked")
     protected void setCustomResources(DateTime dateTime, View backgroundView,
-                                      TextView textView) {
+                                      TextView textView, View eventIndicator) {
         // Set custom background resource
         HashMap<DateTime, Integer> backgroundForDateTimeMap = (HashMap<DateTime, Integer>) caldroidData
                 .get(CaldroidFragment._BACKGROUND_FOR_DATETIME_MAP);
@@ -229,6 +233,21 @@ public class CaldroidGridAdapter extends BaseAdapter {
                         .intValue()));
             }
         }
+
+        // Set event indicators
+        HashMap<DateTime, Boolean> eventForDateTimeMap = (HashMap<DateTime, Boolean>) caldroidData
+                .get(CaldroidFragment._EVENT_FOR_DATETIME_MAP);
+        if (eventForDateTimeMap != null) {
+            // Get event for the dateTime
+            Boolean hasEvents = eventForDateTimeMap.get(dateTime);
+
+            // Set it
+            if (hasEvents != null && hasEvents) {
+                eventIndicator.setVisibility(View.VISIBLE);
+            } else {
+                eventIndicator.setVisibility(View.GONE);
+            }
+        }
     }
 
     /**
@@ -240,23 +259,29 @@ public class CaldroidGridAdapter extends BaseAdapter {
      * @param position
      * @param cellView
      */
-    protected void customizeTextView(int position, TextView cellView) {
-        cellView.setTextColor(mNormalTextColor);
-        cellView.setBackgroundColor(mBackgroundColor);
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    protected void customizeTextView(int position, View cellView) {
+
+        TextView cellTextView = (TextView) cellView.findViewById(R.id.calendar_tv);
+        cellTextView.setTextColor(mNormalTextColor);
+        cellTextView.setBackgroundColor(mBackgroundColor);
+
+        View cellEventIndicator = cellView.findViewById(R.id.eventIndicator);
+        cellEventIndicator.setBackgroundColor(mEventIndicatorColor);
 
         // Get the padding of cell so that it can be restored later
-        int topPadding = cellView.getPaddingTop();
-        int leftPadding = cellView.getPaddingLeft();
-        int bottomPadding = cellView.getPaddingBottom();
-        int rightPadding = cellView.getPaddingRight();
+        int topPadding = cellTextView.getPaddingTop();
+        int leftPadding = cellTextView.getPaddingLeft();
+        int bottomPadding = cellTextView.getPaddingBottom();
+        int rightPadding = cellTextView.getPaddingRight();
 
         // Get dateTime of this cell
         DateTime dateTime = this.datetimeList.get(position);
 
         // Set color of the dates in previous / next month
         if (dateTime.getMonth() != month) {
-            cellView.setTextColor(resources
-                    .getColor(R.color.caldroid_darker_gray));
+            cellTextView.setTextColor(mDisabledTextColor);
+            cellEventIndicator.setBackgroundColor(0x00000000);
         }
 
         boolean shouldResetDiabledView = false;
@@ -265,18 +290,18 @@ public class CaldroidGridAdapter extends BaseAdapter {
         // Customize for disabled dates and date outside min/max dates
         if ((minDateTime != null && dateTime.lt(minDateTime))
                 || (maxDateTime != null && dateTime.gt(maxDateTime))
-                || (disableDates != null && disableDatesMap
-                .containsKey(dateTime))) {
+                || (disableDates != null && disableDatesMap.containsKey(dateTime))
+                ) {
 
-            cellView.setTextColor(mDisabledTextColor);
+            cellTextView.setTextColor(mDisabledTextColor);
             if (CaldroidFragment.disabledBackgroundDrawable == -1) {
-                cellView.setBackgroundResource(R.drawable.disable_cell);
+                cellTextView.setBackgroundResource(R.drawable.disable_cell);
             } else {
-                cellView.setBackgroundResource(CaldroidFragment.disabledBackgroundDrawable);
+                cellTextView.setBackgroundResource(CaldroidFragment.disabledBackgroundDrawable);
             }
 
             if (dateTime.equals(getToday())) {
-                cellView.setBackgroundResource(R.drawable.red_border_gray_bg);
+                cellTextView.setBackgroundResource(R.drawable.red_border_gray_bg);
             }
         } else {
             shouldResetDiabledView = true;
@@ -285,13 +310,13 @@ public class CaldroidGridAdapter extends BaseAdapter {
         // Customize for selected dates
         if (selectedDates != null && selectedDatesMap.containsKey(dateTime)) {
             if (CaldroidFragment.selectedBackgroundDrawable != -1) {
-                cellView.setBackgroundResource(CaldroidFragment.selectedBackgroundDrawable);
+                cellTextView.setBackgroundResource(CaldroidFragment.selectedBackgroundDrawable);
             } else {
-                cellView.setBackgroundColor(resources
+                cellTextView.setBackgroundColor(resources
                         .getColor(R.color.caldroid_sky_blue));
             }
 
-            cellView.setTextColor(CaldroidFragment.selectedTextColor);
+            cellTextView.setTextColor(CaldroidFragment.selectedTextColor);
         } else {
             shouldResetSelectedView = true;
         }
@@ -299,23 +324,23 @@ public class CaldroidGridAdapter extends BaseAdapter {
         if (shouldResetDiabledView && shouldResetSelectedView) {
             // Customize for today
             if (dateTime.equals(getToday())) {
-                //cellView.setBackgroundResource(R.drawable.red_border);
-                cellView.setBackgroundColor(mBackgroundColor);
+                //cellTextView.setBackgroundResource(R.drawable.red_border);
+                cellTextView.setBackgroundColor(mBackgroundColor);
             } else {
-                //cellView.setBackgroundResource(R.drawable.cell_bg);
-                cellView.setBackgroundColor(mBackgroundColor);
+                //cellTextView.setBackgroundResource(R.drawable.cell_bg);
+                cellTextView.setBackgroundColor(mBackgroundColor);
             }
         }
 
         // Set text
-        cellView.setText("" + dateTime.getDay());
+        cellTextView.setText("" + dateTime.getDay());
 
         // Set custom color if required
-        setCustomResources(dateTime, cellView, cellView);
+        setCustomResources(dateTime, cellView, cellTextView, cellEventIndicator);
 
         // Somehow after setBackgroundResource, the padding collapse.
         // This is to recover the padding
-        cellView.setPadding(leftPadding, topPadding, rightPadding,
+        cellTextView.setPadding(leftPadding, topPadding, rightPadding,
                 bottomPadding);
     }
 
@@ -339,14 +364,14 @@ public class CaldroidGridAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        TextView cellView = (TextView) convertView;
+        View cellView =  convertView;
 
         // For reuse
         if (convertView == null) {
             if (squareTextViewCell) {
-                cellView = (TextView) inflater.inflate(R.layout.square_date_cell, null);
+                cellView = inflater.inflate(R.layout.square_date_cell, null);
             } else {
-                cellView = (TextView) inflater.inflate(R.layout.normal_date_cell, null);
+                cellView = inflater.inflate(R.layout.normal_date_cell, null);
             }
         }
 
