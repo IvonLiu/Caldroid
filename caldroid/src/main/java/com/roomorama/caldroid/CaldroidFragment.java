@@ -133,6 +133,8 @@ public class CaldroidFragment extends DialogFragment {
      * View components added by me
      */
     private View mOuterContainer;
+    private View mTitleBar;
+    private View mTitleBarAlt;
 
     /**
      * Initial params key
@@ -154,6 +156,7 @@ public class CaldroidFragment extends DialogFragment {
     /**
      * Initial param keys added by me
      */
+    public final static String SHOW_TITLE_BAR = "showTitleBar";
     public final static String BACKGROUND_COLOR = "backgroundColor";
     public final static String PREV_ARROW_RESOURCE = "prevArrowResource";
     public final static String NEXT_ARROW_RESOURCE = "nextArrowResource";
@@ -235,6 +238,7 @@ public class CaldroidFragment extends DialogFragment {
     /**
      * Variables to store params added by me
      */
+    protected boolean mShowTitleBar;
     protected int mBackgroundColor;
     protected int mPrevArrowResource;
     protected int mNextArrowResource;
@@ -1099,6 +1103,7 @@ public class CaldroidFragment extends DialogFragment {
             }
 
             // Get arguments added by me
+            mShowTitleBar = args.getBoolean(SHOW_TITLE_BAR, true);
             mBackgroundColor = args.getInt(BACKGROUND_COLOR, getResources().getColor(R.color.caldroid_white));
             mPrevArrowResource = args.getInt(PREV_ARROW_RESOURCE, R.drawable.calendar_prev_arrow);
             mNextArrowResource = args.getInt(NEXT_ARROW_RESOURCE, R.drawable.calendar_next_arrow);
@@ -1177,6 +1182,17 @@ public class CaldroidFragment extends DialogFragment {
         // For the outermost LinearLayout container
         mOuterContainer = view.findViewById(R.id.container);
         mOuterContainer.setBackgroundColor(mBackgroundColor);
+
+        // For the title bar
+        mTitleBar = view.findViewById(R.id.calendar_title_view);
+        mTitleBarAlt = view.findViewById(R.id.title_bar_alt);
+        if (mShowTitleBar) {
+            mTitleBar.setVisibility(View.VISIBLE);
+            mTitleBarAlt.setVisibility(View.GONE);
+        } else {
+            mTitleBar.setVisibility(View.GONE);
+            mTitleBarAlt.setVisibility(View.VISIBLE);
+        }
 
         // For the monthTitleTextView
         monthTitleTextView = (TextView) view
