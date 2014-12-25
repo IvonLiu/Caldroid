@@ -28,7 +28,7 @@
             android:layout_toRightOf="@+id/calendar_left_arrow"
             android:gravity="center_horizontal"
             android:textIsSelectable="false"
-            android:textSize="21sp" />
+            android:textSize="20sp" />
 
         <ImageView
             android:id="@+id/calendar_right_arrow"
