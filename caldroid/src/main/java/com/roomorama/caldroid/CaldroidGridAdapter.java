@@ -264,7 +264,6 @@ public class CaldroidGridAdapter extends BaseAdapter {
 
         TextView cellTextView = (TextView) cellView.findViewById(R.id.calendar_tv);
         cellTextView.setTextColor(mNormalTextColor);
-        cellTextView.setBackgroundColor(mBackgroundColor);
 
         View cellEventIndicator = cellView.findViewById(R.id.eventIndicator);
         cellEventIndicator.setBackgroundColor(mEventIndicatorColor);
@@ -325,10 +324,10 @@ public class CaldroidGridAdapter extends BaseAdapter {
             // Customize for today
             if (dateTime.equals(getToday())) {
                 //cellTextView.setBackgroundResource(R.drawable.red_border);
-                cellTextView.setBackgroundColor(mBackgroundColor);
+                //cellTextView.setBackgroundColor(mBackgroundColor);
             } else {
                 //cellTextView.setBackgroundResource(R.drawable.cell_bg);
-                cellTextView.setBackgroundColor(mBackgroundColor);
+                //cellTextView.setBackgroundColor(mBackgroundColor);
             }
         }
 
