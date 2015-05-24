@@ -1365,7 +1365,6 @@ public class CaldroidFragment extends DialogFragment {
             dateGridFragment.setOnItemClickListener(getDateItemClickListener());
             dateGridFragment
                     .setOnItemLongClickListener(getDateItemLongClickListener());
-            dateGridFragment.setBackgroundColor(mBackgroundColor);
         }
 
         // Setup InfinitePagerAdapter to wrap around MonthPagerAdapter

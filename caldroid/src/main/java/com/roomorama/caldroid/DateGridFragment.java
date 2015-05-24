@@ -1,6 +1,5 @@
 package com.roomorama.caldroid;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -27,15 +26,6 @@ public class DateGridFragment extends Fragment {
     private OnItemClickListener onItemClickListener;
     private OnItemLongClickListener onItemLongClickListener;
     private int gridViewRes = 0;
-
-    private int mBackgroundColor = Color.WHITE;
-
-    public void setBackgroundColor(int color) {
-        mBackgroundColor = color;
-        if (gridView != null) {
-            gridView.setBackgroundColor(mBackgroundColor);
-        }
-    }
 
     public OnItemClickListener getOnItemClickListener() {
         return onItemClickListener;
@@ -102,8 +92,6 @@ public class DateGridFragment extends Fragment {
                 parent.removeView(gridView);
             }
         }
-
-        gridView.setBackgroundColor(mBackgroundColor);
 
         return gridView;
     }
